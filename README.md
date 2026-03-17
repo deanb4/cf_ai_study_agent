@@ -29,8 +29,6 @@ npx wrangler login
 
 ### Start
 
-In one terminal:
-
 ```bash
 npm run dev
 ```
