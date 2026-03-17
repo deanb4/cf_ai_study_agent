@@ -20,10 +20,14 @@ export class ChatAgent extends AIChatAgent<Env, StudyState> {
     this.setState({ ...this.state, quizScore: { correct: 0, total: 0 } });
     return { reset: true };
   }
+  @callable()
+    getScore() {
+        return this.state.quizScore;
+    }
 
   async onChatMessage() {
     const workersai = createWorkersAI({ binding: this.env.AI });
-
+    
     const result = streamText({
     //   model: workersai("@cf/zai-org/glm-4.7-flash"),
       model: workersai("@cf/zai-org/glm-4.7-flash"),
@@ -51,6 +55,15 @@ export class ChatAgent extends AIChatAgent<Env, StudyState> {
             correct: z.boolean().describe("Whether the answer was correct"),
             explanation: z.string().describe("Explanation of the correct answer"),
           }),
+           execute: async ({ correct, explanation }: { correct: boolean; explanation: string }) => {
+            const current = this.state.quizScore;
+            const newScore = {
+            correct: current.correct + (correct ? 1 : 0),
+            total: current.total + 1,
+            };
+            this.setState({ ...this.state, quizScore: newScore });
+            return { correct, explanation, newScore };
+        },
 
         }),
       },

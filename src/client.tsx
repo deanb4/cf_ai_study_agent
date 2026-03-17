@@ -49,15 +49,7 @@ export default function App() {
     },
   });
 
-  // useEffect(() => {
-  //   const latest = (messages as any[])
-  //     .flatMap((m) => m.parts ?? [])
-  //     .filter((p) => p.toolName === "checkAnswer" && p.state === "output-available")
-  //     .map((p) => p.output?.newScore)
-  //     .filter(Boolean)
-  //     .at(-1);
-  //   if (latest) setScore(latest);
-  // }, [messages]);
+
 
   useEffect(() => {
     if (status !== "streaming") {
@@ -65,6 +57,16 @@ export default function App() {
     }
   }, [status]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      (agent.stub as any).getScore().then((s: any) => {
+        console.log("loaded score:", s);
+        if (s) setScore(s);
+      });
+    }, 500);
+  }, [agent]);
+
+ 
   const send = () => {
     if (!input.trim()) return;
     sendMessage({ text: input });
