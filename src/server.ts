@@ -9,6 +9,11 @@ type StudyState = {
   currentTopic: string;
 };
 
+// type Env = {
+//   AI: any;
+//   ASSETS: Fetcher;
+// };
+
 export class ChatAgent extends AIChatAgent<Env, StudyState> {
   initialState: StudyState = {
     quizScore: { correct: 0, total: 0 },
@@ -82,3 +87,20 @@ export default {
     );
   },
 } satisfies ExportedHandler<Env>;
+// export default {
+//   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+//     const url = new URL(request.url);
+
+//     // 1. Let the agent system try to handle the request
+//     const agentResponse = await routeAgentRequest(request, env);
+//     if (agentResponse) return agentResponse;
+
+//     // 2. (Optional) Handle /api routes here if you add them later
+//     if (url.pathname.startsWith("/api")) {
+//       return new Response("API route placeholder", { status: 200 });
+//     }
+
+//     // 3. Serve React app (STATIC ASSETS)
+//     return env.ASSETS.fetch(request);
+//   },
+// } satisfies ExportedHandler<Env>;

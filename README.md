@@ -34,12 +34,3 @@ In one terminal:
 ```bash
 npm run dev
 ```
-
-In a second terminal:
-
-```bash
-cd client
-npm run dev
-```
-
-Open `http://localhost:5173`
