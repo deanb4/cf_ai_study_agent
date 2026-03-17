@@ -1,13 +1,22 @@
 # CS Study Agent
 
-An AI-powered computer science study tool built on Cloudflare. Ask questions, take quizzes, and track your score.
+> An AI-powered computer science study tool built on Cloudflare. Ask questions, take quizzes, and track your score in real time.
 
-## What it does
+![CS Study Agent](https://img.shields.io/badge/built%20on-Cloudflare-orange?style=flat-square) ![LLM](https://img.shields.io/badge/LLM-Llama%203.3%2070B-blue?style=flat-square) ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 
-- Generates multiple choice CS practice questions across any topic (algorithms, data structures, networking, OS, databases, web dev)
-- Checks your answers and updates your score in real time
-- Persists state across sessions using Durable Objects
-- Streams responses live as the model thinks
+---
+
+## Features
+
+- 🧠 Generates multiple choice CS practice questions on any topic
+- ✅ Checks your answers and updates your score in real time
+- 💾 Persists quiz state across sessions via Durable Objects
+- ⚡ Streams responses live as the model generates them
+- 🎨 Clean, minimal dark UI
+
+**Topics covered:** Algorithms · Data Structures · Networking · Operating Systems · Databases · Web Development
+
+---
 
 ## Tech Stack
 
@@ -19,6 +28,24 @@ An AI-powered computer science study tool built on Cloudflare. Ask questions, ta
 | Frontend | React + Vite |
 | Deployment | Cloudflare Workers + Assets |
 
+---
+
+## Project Structure
+
+```
+cf_ai_study_agent/
+├── src/
+│   └── server.ts        # Worker + ChatAgent Durable Object
+├── client/
+│   ├── src/
+│   │   ├── App.tsx      # Main React app
+│   │   └── App.css      # Styles
+│   └── package.json
+├── wrangler.jsonc        # Cloudflare config
+└── package.json
+```
+
+---
 
 ## Getting Started
 
@@ -26,33 +53,50 @@ An AI-powered computer science study tool built on Cloudflare. Ask questions, ta
 
 - [Node.js](https://nodejs.org) 18+
 - [Cloudflare account](https://dash.cloudflare.com)
-- Wrangler CLI: `npm install -g wrangler`
-
-### Local Development
-
-1. Clone the repo and install dependencies:
+- Wrangler CLI:
 
 ```bash
+npm install -g wrangler
+```
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/deanb4/cf_ai_study_agent.git
+cd cf_ai_study_agent
+
 npm install
 cd client && npm install && cd ..
 ```
 
-2. Run the dev server:
+### 2. Authenticate with Cloudflare
+
+```bash
+npx wrangler login
+```
+
+### 3. Run Locally
+
+In one terminal, start the Worker:
 
 ```bash
 npm run dev
 ```
 
-3. In a separate terminal, run the frontend:
+In a second terminal, start the frontend:
 
 ```bash
 cd client
 npm run dev
 ```
 
-### Deploy
+The app will be available at `http://localhost:5173`
 
-1. Build the frontend:
+---
+
+## Deploy to Cloudflare
+
+### 1. Build the frontend
 
 ```bash
 cd client
@@ -60,7 +104,7 @@ npm run build
 cd ..
 ```
 
-2. Deploy to Cloudflare:
+### 2. Deploy
 
 ```bash
 npx wrangler deploy
@@ -68,9 +112,11 @@ npx wrangler deploy
 
 Your app will be live at `https://chat-agent.<your-subdomain>.workers.dev`
 
-## How it works
+---
 
-The agent is a Cloudflare Durable Object that extends `AIChatAgent`. It holds two pieces of state:
+## How it Works
+
+The agent is a Cloudflare Durable Object that extends `AIChatAgent` and holds persistent state:
 
 ```typescript
 type StudyState = {
@@ -81,17 +127,21 @@ type StudyState = {
 
 The model has two tools:
 
-- `generateQuestion` — client-side tool that triggers the model to write out a question
-- `checkAnswer` — client-side tool that updates the score in React state when the model evaluates an answer
+- `generateQuestion` — triggers the model to write out a practice question
+- `checkAnswer` — evaluates the user's answer and updates the score in React state
 
-Score is tracked in React state via `onToolCall` and resets on demand via a `@callable()` method on the Durable Object.
+Score is tracked client-side via `onToolCall` and can be reset via a `@callable()` method on the Durable Object.
 
-## Configuration
+### Configuration
 
-Edit `wrangler.toml` to change the Worker name, compatibility date, or AI binding.
-
-The system prompt and model can be changed in `src/server.ts`:
+The model and system prompt can be changed in `src/server.ts`:
 
 ```typescript
 model: workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast"),
 ```
+
+---
+
+## Contributing
+
+PRs welcome. Open an issue first for large changes.
