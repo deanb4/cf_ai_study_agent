@@ -2,8 +2,6 @@
 
 An AI-powered CS study tool built on Cloudflare Workers.
 
-![screenshot](./screenshot.png)
-
 ---
 
 ## Run Locally
